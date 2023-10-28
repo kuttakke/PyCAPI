@@ -12,6 +12,13 @@ requires-python = ">=3.8"
 readme = "README.md"
 license = {text = "MIT"}
 
+[tool.pdm.build]
+includes = ["src/pyclaapi"]
+
+[tool.pdm.version]
+source = "file"
+path = "src/pyclaapi/__init__.py"
+
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
