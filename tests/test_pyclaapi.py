@@ -5,17 +5,17 @@ from typing import Dict, List, Union
 import pytest
 from pytest_mock import MockerFixture
 
-from src.pycapi import PyCAPIAsync
+from src.pyclaapi import PyClaAPI
 
 
 @pytest.fixture
-def pycapi():
-    return PyCAPIAsync("http://127.0.0.1:9090", "token")
+def pyclaapi():
+    return PyClaAPI("http://127.0.0.1:9090", "token")
 
 
 def make_mock_response(
     mocker: MockerFixture,
-    obj: PyCAPIAsync,
+    obj: PyClaAPI,
     method: str,
     status_code: int = 204,
     json_response: Union[Dict, List, None] = None,
@@ -37,54 +37,47 @@ def load_example_data(filename: str) -> Dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-@pytest.mark.asyncio
-async def test_get_version(pycapi: PyCAPIAsync, mocker):
+def test_get_version(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "get",
         json_response={"meta": True, "version": "alpha-g3a9fc39"},
     )
 
-    version = await pycapi.get_version()
+    version = pyclaapi.get_version()
     assert version.meta is True
     assert version.version == "alpha-g3a9fc39"
 
 
-@pytest.mark.asyncio
-async def test_get_proxies(pycapi: PyCAPIAsync, mocker):
+def test_get_proxies(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
-        mocker,
-        pycapi,
-        "get",
-        json_response=load_example_data("example_proxies.json"),
+        mocker, pyclaapi, "get", json_response=load_example_data("example_proxies.json")
     )
 
-    proxies = await pycapi.get_proxies()
+    proxies = pyclaapi.get_proxies()
     assert proxies
 
 
-@pytest.mark.asyncio
-async def test_get_providers(pycapi: PyCAPIAsync, mocker):
+def test_get_providers(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "get",
         json_response=[
             load_example_data("example_proxies.json"),
             load_example_data("example_providers.json"),
         ],
     )
-    providers = await pycapi.get_providers()
+    providers = pyclaapi.get_providers()
     assert providers[0]
     assert providers[0].proxies
 
 
-@pytest.mark.asyncio
-async def test_get_selectors(pycapi: PyCAPIAsync, mocker):
+def test_get_selectors(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "get",
         json_response=[
             load_example_data("example_proxies.json"),
@@ -92,89 +85,83 @@ async def test_get_selectors(pycapi: PyCAPIAsync, mocker):
         ],
     )
 
-    selectors = await pycapi.get_selectors()
+    selectors = pyclaapi.get_selectors()
     assert not bool(selectors[0].test_url)
 
 
-@pytest.mark.asyncio
-async def test_select_proxy_for_provider(pycapi: PyCAPIAsync, mocker):
+def test_select_proxy_for_provider(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "put",
     )
 
-    assert await pycapi.select_proxy_for_provider("test_provider", "test_proxy")
+    assert pyclaapi.select_proxy_for_provider("test_provider", "test_proxy")
 
-    make_mock_response(mocker, pycapi, "put", status_code=400)
+    make_mock_response(mocker, pyclaapi, "put", status_code=400)
 
-    assert not await pycapi.select_proxy_for_provider("test_provider", "test_proxy")
+    assert not pyclaapi.select_proxy_for_provider("test_provider", "test_proxy")
 
 
-@pytest.mark.asyncio
-async def test_get_delay(pycapi: PyCAPIAsync, mocker):
+def test_get_delay(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
-        mocker, pycapi, "get", status_code=200, json_response={"delay": 120}
+        mocker, pyclaapi, "get", status_code=200, json_response={"delay": 120}
     )
-    assert await pycapi.get_delay("test_provider") == 120
+    assert pyclaapi.get_delay("test_provider") == 120
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "get",
         status_code=400,
     )
-    assert await pycapi.get_delay("test_provider") == 0
+    assert pyclaapi.get_delay("test_provider") == 0
 
 
-@pytest.mark.asyncio
-async def test_get_connections(pycapi: PyCAPIAsync, mocker):
+def test_get_connections(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "get",
         status_code=200,
         json_response=load_example_data("example_connections.json"),
     )
-    connections = await pycapi.get_connections()
+    connections = pyclaapi.get_connections()
     assert connections
     assert connections.connections
 
 
-@pytest.mark.asyncio
-async def test_search_connections_by_host(pycapi: PyCAPIAsync, mocker):
+def test_search_connections_by_host(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "get",
         status_code=200,
         json_response=load_example_data("example_connections.json"),
     )
     keyword = "qq.com"
-    connections = await pycapi.search_connections_by_host(keyword)
+    connections = pyclaapi.search_connections_by_host(keyword)
     assert keyword in connections[0].metadata.host
 
 
-@pytest.mark.asyncio
-async def test_close_connection(pycapi: PyCAPIAsync, mocker):
+def test_close_connection(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "delete",
         status_code=204,
     )
-    assert await pycapi.close_connection("id")
+    assert pyclaapi.close_connection("id")
 
 
-@pytest.mark.asyncio
-async def test_dns_query(pycapi: PyCAPIAsync, mocker):
+def test_dns_query(pyclaapi: PyClaAPI, mocker):
     make_mock_response(
         mocker,
-        pycapi,
+        pyclaapi,
         "get",
         status_code=200,
         json_response=load_example_data("example_dns_query.json"),
     )
-    query = await pycapi.dns_query("baidu.com")
+    query = pyclaapi.dns_query("baidu.com")
     assert query.Question
     assert query.Answer[0].data == "39.156.66.10"
     assert query.Answer[0].type == 1

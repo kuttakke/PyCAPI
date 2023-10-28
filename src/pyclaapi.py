@@ -72,10 +72,10 @@ class Base:
             return data
 
 
-class PyCAPI(Base):
+class PyClaAPI(Base):
     def __init__(self, host: str, token: str) -> None:
         """
-        Initializes a PyCAPI instance.
+        Initializes a PyClaAPI instance.
 
         Args:
             host: The host URL of the Clash API. Like http://127.0.0.1:9090
@@ -240,10 +240,10 @@ class PyCAPI(Base):
         return DNSQueryResult(**info)
 
 
-class PyCAPIAsync(Base):
+class PyClaAPIAsync(Base):
     def __init__(self, host: str, token: str) -> None:
         """
-        Initializes a PyCAPIAsync instance.
+        Initializes a PyClaAPIAsync instance.
 
         Args:
             host: The host URL of the Clash API. Like http://127.0.0.1:9090
