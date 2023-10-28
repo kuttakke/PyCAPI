@@ -1,0 +1,69 @@
+# This workflow will upload a Python Package using Twine when a release is created
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python#publishing-to-package-registries
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Upload Python Package
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version Number
+        required: true
+        
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ env.GITHUB_REF }}
+        token: ${{ secrets.GH_TOKEN }}
+
+    - name: Config Git Username
+      run: |
+        git config user.name github-actions[bot]
+        git config user.email github-actions[bot]@users.noreply.github.com
+    
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9.x"
+        
+    - name: Install dependencies
+      run: |
+        pip install pdm
+
+    - name: Change version
+      run: |
+        python ./bump-version.py ${{ github.event.inputs.version }}
+        git add .
+        git diff-index --quiet HEAD || git commit -m ":sparkles: ${{ github.event.inputs.version }}"
+        git push        
+    
+    - name: Build and Publish
+      run: |
+        pdm publish --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
+
+    - name: Release
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ github.event.inputs.version }}
+      run: |
+        gh release create "$tag" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
+            --generate-notes
