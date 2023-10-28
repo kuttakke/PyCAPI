@@ -1,0 +1,10 @@
+class Api:
+    LOGS = "/logs"
+    TRAFFIC = "/traffic"
+    VERSION = "/version"
+    CONFIGS = "/configs"
+    PROXIES = "/proxies"
+    RULES = "/rules"
+    CONNECTIONS = "/connections"
+    PROVIDERS = "/providers/proxies"
+    DNS_QUERY = "/dns/query"

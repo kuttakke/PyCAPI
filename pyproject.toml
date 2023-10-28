@@ -1,0 +1,31 @@
+[project]
+name = "PyCAPI"
+version = "0.1.0"
+description = "A Python library for Clash API."
+authors = [
+    {name = "KuTaKe",email = "kuttake@outlook.com"},
+]
+dependencies = [
+    "httpx"
+]
+requires-python = ">=3.8"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-mock>=3.12.0",
+    "pytest-cov>=4.1.0",
+    "pytest-html>=4.0.2",
+    "pytest-asyncio>=0.21.1",
+    "toml>=0.10.2",
+    "tox-pdm>=0.7.0",
+]
+
+[tool.pdm.scripts]
+test = {call = "tests:test"}
