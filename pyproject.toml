@@ -1,6 +1,6 @@
 [project]
 name = "PyClaAPI"
-version = "0.1.1"
+version = "0.1.2"
 description = "A Python library for Clash API."
 authors = [
     {name = "KuTaKe",email = "kuttake@outlook.com"},
