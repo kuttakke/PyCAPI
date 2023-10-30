@@ -74,6 +74,10 @@ jobs:
       # with:
       #   config-name: my-config.yml
       #   disable-autolabeler: true
+      with:
+        tag: ${{ github.event.inputs.version }}
+        name: ${{ github.event.inputs.version }}
+        version: ${{ github.event.inputs.version }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -81,11 +85,14 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: "dist-${{ github.event.inputs.version }}"
-        path: dist/
+        path: |
+          dist/*.tar.gz
+          dist/*.whl
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          dist/
+          dist/*.tar.gz
+          dist/*.whl
