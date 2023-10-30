@@ -56,6 +56,7 @@ jobs:
     
     - name: Build and Publish
       run: |
+        pdm build
         pdm publish --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
 
     - name: Release
@@ -65,5 +66,11 @@ jobs:
       run: |
         gh release create "$tag" \
             --repo="$GITHUB_REPOSITORY" \
-            --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
+            --title="${tag}" \
             --generate-notes
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: "dist-${{ github.event.inputs.version }}"
+        path: dist/
