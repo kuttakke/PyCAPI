@@ -75,9 +75,9 @@ jobs:
       #   config-name: my-config.yml
       #   disable-autolabeler: true
       with:
-        tag: ${{ github.event.inputs.version }}
-        name: ${{ github.event.inputs.version }}
-        version: ${{ github.event.inputs.version }}
+        tag: v${{ github.event.inputs.version }}
+        name: v${{ github.event.inputs.version }}
+        version: v${{ github.event.inputs.version }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
