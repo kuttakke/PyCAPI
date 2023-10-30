@@ -91,7 +91,7 @@ jobs:
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
+      if: github.event_name == 'release'
       with:
         files: |
           dist/*.tar.gz
