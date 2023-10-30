@@ -60,9 +60,9 @@ jobs:
     # pdm publish --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
 
     # - name: Release
-    #   env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #       tag: v${{ github.event.inputs.version }}
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ github.event.inputs.version }}
     #   run: |
     #     gh release create "$tag" \
     #         --repo="$GITHUB_REPOSITORY" \
