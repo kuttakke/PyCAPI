@@ -59,15 +59,6 @@ jobs:
         pdm build
         pdm publish --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
 
-    # - name: Release
-    #   env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #       tag: v${{ github.event.inputs.version }}
-    #   run: |
-    #     gh release create "$tag" \
-    #         --repo="$GITHUB_REPOSITORY" \
-    #         --title="${tag}" \
-    #         --generate-notes
     - name: Release
       uses: release-drafter/release-drafter@v5
       # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
@@ -78,6 +69,7 @@ jobs:
         tag: v${{ github.event.inputs.version }}
         name: v${{ github.event.inputs.version }}
         version: v${{ github.event.inputs.version }}
+        publish: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
@@ -91,8 +83,8 @@ jobs:
 
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
-      if: github.event_name == 'release'
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: |
           dist/*.tar.gz
           dist/*.whl
