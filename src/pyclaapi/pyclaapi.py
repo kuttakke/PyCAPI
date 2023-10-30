@@ -171,7 +171,7 @@ class PyClaAPI(Base):
         """
         req = self._client.put(
             f"{Api.PROXIES}/{quote(provider.name if isinstance(provider, Provider) else provider)}",
-            data={"name": proxy.name if isinstance(proxy, Proxy) else proxy},
+            json={"name": proxy.name if isinstance(proxy, Proxy) else proxy},
         )
         return req.status_code == 204
 
@@ -337,7 +337,7 @@ class PyClaAPIAsync(Base):
         """
         req = await self._client.put(
             f"{Api.PROXIES}/{quote(provider.name if isinstance(provider, Provider) else provider)}",
-            data={"name": proxy.name if isinstance(proxy, Proxy) else proxy},
+            json={"name": proxy.name if isinstance(proxy, Proxy) else proxy},
         )
         return req.status_code == 204
 
