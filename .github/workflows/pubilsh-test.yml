@@ -77,6 +77,7 @@ jobs:
     - name: Upload Release Asset
       uses: softprops/action-gh-release@v1
       with:
+        tag_name: v${{ github.event.inputs.version }}
         files: |
           dist/*.tar.gz
           dist/*.whl
