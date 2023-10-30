@@ -46,38 +46,23 @@ jobs:
     - name: Install dependencies
       run: |
         pip install pdm
-
-    # - name: Change version
-    #   run: |
-    #     python ./bump-version.py ${{ github.event.inputs.version }}
-    #     git add .
-    #     git diff-index --quiet HEAD || git commit -m ":sparkles: ${{ github.event.inputs.version }}"
-    #     git push        
-    
+  
     - name: Build and Publish
       run: |
         pdm build
-    # pdm publish --username __token__ --password ${{ secrets.PYPI_API_TOKEN }}
 
     # - name: Release
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: v${{ github.event.inputs.version }}
-    #   run: |
-    #     gh release create "$tag" \
-    #         --repo="$GITHUB_REPOSITORY" \
-    #         --title="${tag}" \
-    #         --generate-notes
+
     - name: Release
       uses: release-drafter/release-drafter@v5
-      # (Optional) specify config name to use, relative to .github/. Default: release-drafter.yml
-      # with:
-      #   config-name: my-config.yml
-      #   disable-autolabeler: true
       with:
         tag: v${{ github.event.inputs.version }}
         name: v${{ github.event.inputs.version }}
         version: v${{ github.event.inputs.version }}
+        publish: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
